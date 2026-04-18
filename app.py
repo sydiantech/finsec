@@ -6,6 +6,7 @@ import streamlit as st
 import joblib
 import pandas as pd
 import re
+import os
 
 # ============================================================
 # PAGE SETUP
@@ -19,14 +20,15 @@ st.set_page_config(
 
 # ============================================================
 # LOAD THE MODEL
-# @st.cache_resource tells Streamlit: "load this ONCE, then remember it"
-# Without this, it would reload the model every single time someone clicks a button (slow!)
 # ============================================================
 @st.cache_resource
 def load_model():
     try:
-        return joblib.load("model/phishing_model.pkl")
-    except FileNotFoundError:
+        BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+        MODEL_PATH = os.path.join(BASE_DIR, "model", "phishing_model.pkl")
+        return joblib.load(MODEL_PATH)
+    except Exception as e:
+        st.error(f"Error loading model: {e}")
         return None
 
 
